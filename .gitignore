@@ -1,0 +1,254 @@
+# ===================================
+# Python
+# ===================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+*.log
+
+# ===================================
+# Terraform
+# ===================================
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files, which might contain sensitive data
+*.tfvars
+*.tfvars.json
+
+# Ignore override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Lock file (commit this in production, ignore for examples)
+.terraform.lock.hcl
+
+# ===================================
+# Kubernetes
+# ===================================
+# Helm
+*.tgz
+charts/*/charts
+charts/*/*.lock
+
+# Kubernetes secrets (NEVER commit these)
+*secret*.yaml
+*secrets*.yaml
+kubeconfig
+kubeconfig.*
+*.kubeconfig
+
+# ===================================
+# Docker
+# ===================================
+# Docker build artifacts
+*.tar
+*.tar.gz
+
+# ===================================
+# IDE / Editor
+# ===================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ===================================
+# macOS
+# ===================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ===================================
+# Linux
+# ===================================
+*~
+.directory
+.Trash-*
+
+# ===================================
+# Windows
+# ===================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ===================================
+# Security & Secrets (CRITICAL!)
+# ===================================
+# AWS credentials
+.aws/
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# SSH keys
+id_rsa
+id_rsa.*
+id_ed25519
+id_ed25519.*
+*.ppk
+
+# Environment files with secrets
+.env
+.env.*
+.envrc
+*.env
+
+# Certificate files
+*.csr
+*.der
+*.cer
+
+# API keys and tokens
+*apikey*
+*api-key*
+*token*
+*credentials*
+
+# Vault
+.vault-token
+
+# ===================================
+# Build Artifacts
+# ===================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===================================
+# Testing & Reports
+# ===================================
+coverage/
+test-results/
+*.test
+*.spec
+
+# Security scan results
+bandit-report.json
+trivy-results.json
+trivy-results.sarif
+checkov-report.sarif
+snyk-report.json
+semgrep-results.json
+results.sarif
+
+# SBOM files (optional - you may want to commit these)
+sbom.spdx.json
+sbom.cyclonedx.json
+
+# ===================================
+# Logs
+# ===================================
+*.log
+logs/
+*.out
+
+# ===================================
+# Backup files
+# ===================================
+*.bak
+*.backup
+*.old
+*.orig
+
+# ===================================
+# Temporary files
+# ===================================
+tmp/
+temp/
+*.tmp
+*.temp
+
+# ===================================
+# CI/CD
+# ===================================
+.github/workflows/*.local.yml
+
+# ===================================
+# Project Specific
+# ===================================
+# Local development overrides
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Falco custom configurations (if they contain sensitive data)
+# Remove these lines if your Falco configs are safe to commit
+# falco/falco-config.local.yaml
+
+# Local scripts
+*.local.sh
+scripts/local/
+
+# Documentation drafts
+docs/drafts/
+*.draft.md

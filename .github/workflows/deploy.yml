@@ -1,0 +1,27 @@
+name: Deploy Code to K8s
+on:
+  push:
+    branches: [ main ]
+env:
+  KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Kubeconfig
+        run: |
+          echo "${{ env.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/deployment.yaml
+          kubectl apply -f k8s/service.yaml
+      - name: Verify Deployment
+        run: |
+          kubectl rollout status deployment/my-deployment --namespace=my-namespace
+          kubectl get pods --namespace=my-namespace
+      - name: Clean up Kubeconfig
+        run: |
+          rm -f $HOME/.kube/config
