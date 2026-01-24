@@ -1,0 +1,9 @@
+#!/bin/bash
+# Simulate crypto mining (MITRE T1496)
+
+echo "Simulating crypto miner process..."
+kubectl get pods -l app=flask-api -o name | head -1 | \
+  xargs -I {} kubectl exec -it {} -- /bin/sh -c \
+  "nohup sleep 3600 &"  # Simulated miner process
+
+echo "Check Falco alerts for detection"

@@ -1,0 +1,66 @@
+# Custom Falco rules for Flask API
+
+- rule: Container Shell Spawned
+  desc: Detect shell spawned in Flask container
+  condition: >
+    spawned_process and
+    container and
+    container.image.repository contains "flask-api" and
+    (proc.name = bash or proc.name = sh)
+  output: >
+    Shell spawned in Flask container
+    (user=%user.name container=%container.name shell=%proc.name
+    parent=%proc.pname cmdline=%proc.cmdline)
+  priority: WARNING
+  tags: [container, shell, mitre_execution]
+
+- rule: Unexpected Network Connection from Flask
+  desc: Flask container making unexpected outbound connection
+  condition: >
+    outbound and
+    container and
+    container.image.repository contains "flask-api" and
+    not fd.sip in (allowed_ips)
+  output: >
+    Unexpected network connection from Flask
+    (connection=%fd.name user=%user.name container=%container.name)
+  priority: WARNING
+  tags: [network, mitre_command_and_control]
+
+- rule: Privilege Escalation Attempt
+  desc: Detect privilege escalation in container
+  condition: >
+    spawned_process and
+    container and
+    proc.name in (sudo, su) and
+    container.image.repository contains "flask-api"
+  output: >
+    Privilege escalation attempt
+    (user=%user.name container=%container.name command=%proc.cmdline)
+  priority: CRITICAL
+  tags: [privilege_escalation, mitre_privilege_escalation]
+
+- rule: Crypto Mining Detected
+  desc: Detect crypto mining process
+  condition: >
+    spawned_process and
+    container and
+    (proc.name in (xmrig, minerd, cpuminer) or
+     proc.cmdline contains "stratum+tcp")
+  output: >
+    Crypto mining detected
+    (container=%container.name process=%proc.name cmdline=%proc.cmdline)
+  priority: CRITICAL
+  tags: [malware, mitre_impact]
+
+- rule: Suspicious File Access
+  desc: Access to sensitive files
+  condition: >
+    open_read and
+    container and
+    fd.name in (/etc/shadow, /etc/passwd, /root/.ssh/id_rsa)
+  output: >
+    Suspicious file access
+    (file=%fd.name container=%container.name user=%user.name)
+  priority: WARNING
+  tags: [filesystem, mitre_credential_access]

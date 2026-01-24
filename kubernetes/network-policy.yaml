@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: flask-api-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: flask-api
+  policyTypes:
+  - Ingress
+  - Egress
+  
+  # Allow ingress only from ingress controller
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: ingress-nginx
+    ports:
+    - protocol: TCP
+      port: 5000
+  
+  # Allow egress only for DNS and HTTPS
+  egress:
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: UDP
+      port: 53  # DNS
+  - to:
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443  # HTTPS

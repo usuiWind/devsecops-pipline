@@ -12,6 +12,9 @@ provider "aws" {
   region = var.aws_region
 }
 
+# Data source for current AWS account
+data "aws_caller_identity" "current" {}
+
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "~> 5.0"
@@ -99,7 +102,7 @@ resource "aws_cloudtrail" "main" {
 }
 
 resource "aws_s3_bucket" "cloudtrail" {
-  bucket = "${var.project_name}-cloudtrail-logs"
+  bucket = "${var.project_name}-cloudtrail-logs-${data.aws_caller_identity.current.account_id}"
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
@@ -110,4 +113,44 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "cloudtrail" {
       sse_algorithm = "AES256"
     }
   }
+}
+
+# S3 bucket policy for CloudTrail
+resource "aws_s3_bucket_policy" "cloudtrail" {
+  bucket = aws_s3_bucket.cloudtrail.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AWSCloudTrailAclCheck"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:GetBucketAcl"
+        Resource = aws_s3_bucket.cloudtrail.arn
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = "arn:aws:cloudtrail:${var.aws_region}:${data.aws_caller_identity.current.account_id}:trail/${var.project_name}-trail"
+          }
+        }
+      },
+      {
+        Sid    = "AWSCloudTrailWrite"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.cloudtrail.arn}/*"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = "arn:aws:cloudtrail:${var.aws_region}:${data.aws_caller_identity.current.account_id}:trail/${var.project_name}-trail"
+            "s3:x-amz-acl"  = "bucket-owner-full-control"
+          }
+        }
+      }
+    ]
+  })
 }

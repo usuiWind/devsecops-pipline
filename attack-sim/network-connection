@@ -1,0 +1,9 @@
+#!/bin/bash
+# Simulate unexpected network connection (MITRE T1071)
+
+echo "Simulating unexpected network connection..."
+kubectl get pods -l app=flask-api -o name | head -1 | \
+  xargs -I {} kubectl exec -it {} -- /bin/sh -c \
+  "wget -qO- http://example.com"  # Simulated network connection
+
+echo "Check Falco alerts for detection"
